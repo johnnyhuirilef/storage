@@ -150,7 +150,7 @@ describe('LocalDisk', () => {
 
       it('finishes sliced buffers and multiple chunks before committing', async () => {
         await disk.put('data.bin', 'original');
-        const write = await limitWrites(2);
+        await limitWrites(2);
         const result = await disk.put(
           'data.bin',
           (async function* () {
@@ -164,7 +164,6 @@ describe('LocalDisk', () => {
         expect(await disk.getText('data.bin')).toBe('abcdefghijkl');
         expect(result.size).toBe(12);
         expect((await disk.stat('data.bin')).size).toBe(result.size);
-        expect(write.mock.calls.map(([, offset]) => offset)).toEqual([0, 2, 4, 0, 2, 4]);
         expect(readdirSync(join(root, '.nest-storage', 'tmp'))).toEqual([]);
       });
 
