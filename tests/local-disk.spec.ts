@@ -203,13 +203,17 @@ describe('LocalDisk', () => {
         await disk.put('data.bin', 'original');
         const controller = new AbortController();
         const reason = new Error('cancelled');
-        const write = await limitWrites(2, () => controller.abort(reason));
+        const write = await limitWrites(2, (call) => {
+          if (call === 2) {
+            controller.abort(reason);
+          }
+        });
 
         await expect(
           disk.put('data.bin', 'replacement', { signal: controller.signal }),
         ).rejects.toBe(reason);
 
-        expect(write).toHaveBeenCalledTimes(1);
+        expect(write).toHaveBeenCalledTimes(2);
         expect(await disk.getText('data.bin')).toBe('original');
         expect(readdirSync(join(root, '.nest-storage', 'tmp'))).toEqual([]);
       });
