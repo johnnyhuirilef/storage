@@ -218,9 +218,12 @@ describe('LocalDisk', () => {
         expect(readdirSync(join(root, '.nest-storage', 'tmp'))).toEqual([]);
       });
 
-      it('stores an empty body without treating it as zero progress', async () => {
+      it('skips streamed empty chunks without treating them as zero progress', async () => {
         const write = await limitWrites(0);
-        const result = await disk.put('empty.bin', Buffer.alloc(0));
+        const result = await disk.put('empty.bin', (async function* () {
+          yield Buffer.alloc(0);
+          yield Buffer.alloc(0);
+        })());
 
         expect(result.size).toBe(0);
         expect((await disk.stat('empty.bin')).size).toBe(0);
