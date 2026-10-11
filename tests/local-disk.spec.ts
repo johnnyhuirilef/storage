@@ -238,7 +238,9 @@ describe('LocalDisk', () => {
               truncateSync(join(tmp, file), 1);
             })(),
           ),
-        ).rejects.toBeInstanceOf(StorageError);
+        ).rejects.toThrow(
+          new StorageError('Local disk write size does not match the written body for "data.bin"'),
+        );
 
         expect(await disk.getText('data.bin')).toBe('original');
         expect((await disk.stat('data.bin')).metadata).toEqual({ version: 'original' });

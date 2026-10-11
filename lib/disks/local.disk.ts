@@ -113,7 +113,9 @@ export class LocalDisk extends StorageDisk {
       await handle.sync();
       const stats = await handle.stat();
       if (stats.size !== size) {
-        throw new StorageError('Local disk write size does not match the written body');
+        throw new StorageError(
+          `Local disk write size does not match the written body for "${key}"`,
+        );
       }
 
       await handle.close();
