@@ -174,7 +174,7 @@ describe('LocalDisk', () => {
 
         await expect(
           disk.put('data.bin', 'replacement', { metadata: { version: 'replacement' } }),
-        ).rejects.toBeInstanceOf(StorageError);
+        ).rejects.toThrow(new StorageError('Local disk write made no progress for "data.bin"'));
 
         expect(write).toHaveBeenCalledTimes(1);
         expect(await disk.getText('data.bin')).toBe('original');

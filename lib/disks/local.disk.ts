@@ -103,7 +103,7 @@ export class LocalDisk extends StorageDisk {
             null,
           );
           if (bytesWritten === 0) {
-            throw new StorageError('Local disk write made no progress');
+            throw new StorageError(`Local disk write made no progress for "${key}"`);
           }
           offset += bytesWritten;
           size += bytesWritten;
